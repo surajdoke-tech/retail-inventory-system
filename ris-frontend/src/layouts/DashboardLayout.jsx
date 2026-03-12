@@ -1,8 +1,13 @@
-import { Box, List, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material";
+import { 
+  Box, List, ListItemButton, ListItemIcon, ListItemText,
+  Typography, AppBar, Toolbar, IconButton, Avatar
+} from "@mui/material";
+
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import CategoryIcon from "@mui/icons-material/Category";
 import BrandingWatermarkIcon from "@mui/icons-material/BrandingWatermark";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 
 function DashboardLayout({ children }) {
 
@@ -42,9 +47,37 @@ function DashboardLayout({ children }) {
         </List>
       </Box>
 
-      {/* Main Content */}
-      <Box sx={{ flexGrow: 1, p: 3 }}>
-        {children}
+      
+
+      {/* Main Section */}
+      <Box sx={{ width: '82.3vw' }}>
+
+        {/* Top Navbar */}
+        <AppBar position="static" color="inherit" elevation={1}>
+          <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+            
+            <Typography variant="h6">
+              Dashboard
+            </Typography>
+
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <IconButton>
+                <NotificationsIcon />
+              </IconButton>
+
+              <Avatar sx={{ width: 32, height: 32 }}>
+                S
+              </Avatar>
+            </Box>
+
+          </Toolbar>
+        </AppBar>
+
+        {/* Page Content */}
+        <Box sx={{ p: 3 }}>
+          {children}
+        </Box>
+
       </Box>
 
     </Box>
