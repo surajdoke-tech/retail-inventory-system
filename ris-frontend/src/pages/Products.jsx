@@ -11,23 +11,74 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 function Products() {
 
-  const [open, setOpen] = useState(false);
-  const [editId, setEditId] = useState(null);
+  {/* DATA GRID */}
+  const columns = [
+    { field: "id", headerName: "ID", width: 90 },
+    { field: "name", headerName: "Product Name", flex: 1 },
+    { field: "brand", headerName: "Brand", flex: 1 },
+    { field: "material", headerName: "Material", flex: 1 },
+    { field: "stock", headerName: "Stock", width: 120 },
+
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 150,
+      sortable: false,
+      renderCell: (params) => (
+        <>
+          <IconButton
+            color="primary"
+            onClick={() => handleEdit(params.row)}
+          >
+            <EditIcon />
+          </IconButton>
+
+          <IconButton
+            color="error"
+            onClick={() => handleDeleteClick(params.row.id)}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </>
+      )
+    }
+  ];
+
+
+  {/* CRUD OPS */}
+
+  // SAVE DATA
+  const [products, setProducts] = useState([
+    { id: 1, name: "Wall Tiles", brand: "Kajaria", material: "natural stone", stock: 120 },
+    { id: 2, name: "Floor Tiles", brand: "Somany", material: "porcelain", stock: 80 },
+    { id: 3, name: "Bathroom Tiles", brand: "Johnson", material: "vitrified", stock: 50 }
+  ]);
+
   const [formData, setFormData] = useState({
     name: "",
     brand: "",
-    category: "",
+    material: "",
     stock: ""
   });
-  const [products, setProducts] = useState([
-    { id: 1, name: "Wall Tiles", brand: "Kajaria", category: "natural stone", stock: 120 },
-    { id: 2, name: "Floor Tiles", brand: "Somany", category: "porcelain", stock: 80 },
-    { id: 3, name: "Bathroom Tiles", brand: "Johnson", category: "vitrified", stock: 50 }
-  ]);
 
+  // EDIT/UPDATE DATA
+  const [editId, setEditId] = useState(null);
+
+  // DELETE DATA
+  const [deleteId, setDeleteId] = useState(null);
+  
+  // HANDLE DIALOG BOX STATE
+  const [open, setOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+
+  {/* HANDLER FUNCTIONS */}
+
+  // HANDLE DAILOG BOX
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  // HANDLE DATA CHANGE
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -62,7 +113,7 @@ function Products() {
     setFormData({
       name: "",
       brand: "",
-      category: "",
+      material: "",
       stock: ""
     });
 
@@ -74,7 +125,7 @@ function Products() {
     setFormData({
       name: product.name,
       brand: product.brand,
-      category: product.category,
+      material: product.material,
       stock: product.stock
     });
 
@@ -83,33 +134,29 @@ function Products() {
     setOpen(true);
   };
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 90 },
-    { field: "name", headerName: "Product Name", flex: 1 },
-    { field: "brand", headerName: "Brand", flex: 1 },
-    { field: "stock", headerName: "Stock", width: 120 },
+  const handleDeleteClick = (id) => {
+    setDeleteId(id);
+    setDeleteOpen(true);
+  };
 
-    {
-      field: "actions",
-      headerName: "Actions",
-      width: 150,
-      sortable: false,
-      renderCell: (params) => (
-        <>
-          <IconButton
-            color="primary"
-            onClick={() => handleEdit(params.row)}
-          >
-            <EditIcon />
-          </IconButton>
+  const handleDeleteConfirm = () => {
 
-          <IconButton color="error">
-            <DeleteIcon />
-          </IconButton>
-        </>
-      )
-    }
-  ];
+    const filteredProducts = products.filter(
+      (product) => product.id !== deleteId
+    );
+
+    setProducts(filteredProducts);
+
+    setDeleteOpen(false);
+    setDeleteId(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteOpen(false);
+    setDeleteId(null);
+  };
+
+
 
   return (
     <Box>
@@ -140,7 +187,7 @@ function Products() {
       </Box>
 
 
-      {/* Dialog Box */}
+      {/* Dialog Box - Data Save/Update */}
 
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm" >
 
@@ -165,12 +212,12 @@ function Products() {
           />
 
           <TextField
-            label="Category"
-            name="category"
-            value={formData.category}
+            label="Material"
+            name="material"
+            value={formData.material}
             onChange={handleChange}
             fullWidth
-          />
+            />
 
           <TextField
             label="Stock"
@@ -179,7 +226,7 @@ function Products() {
             value={formData.stock}
             onChange={handleChange}
             fullWidth
-          />
+            />
 
         </DialogContent>
 
@@ -191,6 +238,36 @@ function Products() {
           <Button variant="contained" onClick={handleSave}>
             Save
           </Button>
+        </DialogActions>
+
+      </Dialog>
+
+      {/* Dialog Box - Data Delete */}
+      
+      <Dialog open={deleteOpen} onClose={handleDeleteCancel}>
+
+        <DialogTitle>
+          Delete Product
+        </DialogTitle>
+
+        <DialogContent>
+          Are you sure you want to delete this product?
+        </DialogContent>
+
+        <DialogActions>
+
+          <Button onClick={handleDeleteCancel}>
+            Cancel
+          </Button>
+
+          <Button
+            color="error"
+            variant="contained"
+            onClick={handleDeleteConfirm}
+          >
+            Delete
+          </Button>
+
         </DialogActions>
 
       </Dialog>
