@@ -1,10 +1,20 @@
-import { Box, Typography, Button, IconButton } from "@mui/material";
+import React, { useState } from "react";
+import { Box, Typography, Button, IconButton, Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 function Products() {
+
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -51,7 +61,7 @@ function Products() {
           Products
         </Typography>
 
-        <Button variant="contained">
+        <Button variant="contained" onClick={handleOpen}>
           Add Product
         </Button>
       </Box>
@@ -64,6 +74,50 @@ function Products() {
           checkboxSelection
         />
       </Box>
+
+
+      {/* Dialog Box */}
+
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm" >
+
+        <DialogTitle>Add Product</DialogTitle>
+
+        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+
+          <TextField sx={{ mt: 3 }}
+            label="Product Name"
+            fullWidth
+          />
+
+          <TextField
+            label="Brand"
+            fullWidth
+          />
+
+          <TextField
+            label="Category"
+            fullWidth
+          />
+
+          <TextField
+            label="Stock"
+            type="number"
+            fullWidth
+          />
+
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleClose}>
+            Cancel
+          </Button>
+
+          <Button variant="contained">
+            Save
+          </Button>
+        </DialogActions>
+
+      </Dialog>
 
     </Box>
   );
