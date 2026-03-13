@@ -12,9 +12,41 @@ import DeleteIcon from "@mui/icons-material/Delete";
 function Products() {
 
   const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    brand: "",
+    category: "",
+    stock: ""
+  });
+  const [products, setProducts] = useState([
+    { id: 1, name: "Wall Tiles", brand: "Kajaria", stock: 120 },
+    { id: 2, name: "Floor Tiles", brand: "Somany", stock: 80 },
+    { id: 3, name: "Bathroom Tiles", brand: "Johnson", stock: 50 }
+  ]);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSave = () => {
+
+    const newProduct = {
+      id: products.length + 1,
+      name: formData.name,
+      brand: formData.brand,
+      stock: formData.stock
+    };
+
+    setProducts([...products, newProduct]);
+
+    handleClose();
+  };
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -41,12 +73,6 @@ function Products() {
     }
   ];
 
-  const rows = [
-    { id: 1, name: "Wall Tiles", brand: "Kajaria", stock: 120 },
-    { id: 2, name: "Floor Tiles", brand: "Somany", stock: 80 },
-    { id: 3, name: "Bathroom Tiles", brand: "Johnson", stock: 50 }
-  ];
-
   return (
     <Box>
 
@@ -68,7 +94,7 @@ function Products() {
 
       <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
-          rows={rows}
+          rows={products}
           columns={columns}
           pageSizeOptions={[5, 10]}
           checkboxSelection
@@ -86,23 +112,31 @@ function Products() {
 
           <TextField sx={{ mt: 3 }}
             label="Product Name"
+            name="name"
             fullWidth
+            onChange={handleChange}
           />
 
           <TextField
             label="Brand"
+            name="brand"
             fullWidth
+            onChange={handleChange}
           />
 
           <TextField
             label="Category"
+            name="category"
             fullWidth
+            onChange={handleChange}
           />
 
           <TextField
             label="Stock"
+            name="stock"
             type="number"
             fullWidth
+            onChange={handleChange}
           />
 
         </DialogContent>
@@ -112,7 +146,7 @@ function Products() {
             Cancel
           </Button>
 
-          <Button variant="contained">
+          <Button variant="contained" onClick={handleSave}>
             Save
           </Button>
         </DialogActions>
