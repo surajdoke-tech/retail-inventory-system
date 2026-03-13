@@ -12,6 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 function Products() {
 
   const [open, setOpen] = useState(false);
+  const [editId, setEditId] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     brand: "",
@@ -19,9 +20,9 @@ function Products() {
     stock: ""
   });
   const [products, setProducts] = useState([
-    { id: 1, name: "Wall Tiles", brand: "Kajaria", stock: 120 },
-    { id: 2, name: "Floor Tiles", brand: "Somany", stock: 80 },
-    { id: 3, name: "Bathroom Tiles", brand: "Johnson", stock: 50 }
+    { id: 1, name: "Wall Tiles", brand: "Kajaria", category: "natural stone", stock: 120 },
+    { id: 2, name: "Floor Tiles", brand: "Somany", category: "porcelain", stock: 80 },
+    { id: 3, name: "Bathroom Tiles", brand: "Johnson", category: "vitrified", stock: 50 }
   ]);
 
   const handleOpen = () => setOpen(true);
@@ -36,16 +37,50 @@ function Products() {
 
   const handleSave = () => {
 
-    const newProduct = {
-      id: products.length + 1,
-      name: formData.name,
-      brand: formData.brand,
-      stock: formData.stock
-    };
+    if (editId) {
 
-    setProducts([...products, newProduct]);
+      const updatedProducts = products.map((product) =>
+        product.id === editId
+          ? { ...product, ...formData }
+          : product
+      );
+
+      setProducts(updatedProducts);
+
+    } else {
+
+      const newProduct = {
+        id: products.length + 1,
+        ...formData
+      };
+
+      setProducts([...products, newProduct]);
+
+    }
+
+    setEditId(null);
+    setFormData({
+      name: "",
+      brand: "",
+      category: "",
+      stock: ""
+    });
 
     handleClose();
+  };
+
+  const handleEdit = (product) => {
+
+    setFormData({
+      name: product.name,
+      brand: product.brand,
+      category: product.category,
+      stock: product.stock
+    });
+
+    setEditId(product.id);
+
+    setOpen(true);
   };
 
   const columns = [
@@ -59,9 +94,12 @@ function Products() {
       headerName: "Actions",
       width: 150,
       sortable: false,
-      renderCell: () => (
+      renderCell: (params) => (
         <>
-          <IconButton color="primary">
+          <IconButton
+            color="primary"
+            onClick={() => handleEdit(params.row)}
+          >
             <EditIcon />
           </IconButton>
 
@@ -113,30 +151,34 @@ function Products() {
           <TextField sx={{ mt: 3 }}
             label="Product Name"
             name="name"
-            fullWidth
+            value={formData.name}
             onChange={handleChange}
+            fullWidth
           />
 
           <TextField
             label="Brand"
             name="brand"
-            fullWidth
+            value={formData.brand}
             onChange={handleChange}
+            fullWidth
           />
 
           <TextField
             label="Category"
             name="category"
-            fullWidth
+            value={formData.category}
             onChange={handleChange}
+            fullWidth
           />
 
           <TextField
             label="Stock"
             name="stock"
             type="number"
-            fullWidth
+            value={formData.stock}
             onChange={handleChange}
+            fullWidth
           />
 
         </DialogContent>
