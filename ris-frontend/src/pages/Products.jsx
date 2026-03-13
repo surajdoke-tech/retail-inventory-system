@@ -28,14 +28,22 @@ function Products() {
         <>
           <IconButton
             color="primary"
-            onClick={() => handleEdit(params.row)}
+            disabled={selectedRows.length > 1}
+            onClick={(event) => {
+              event.stopPropagation();
+              handleEdit(params.row);
+            }}
           >
             <EditIcon />
           </IconButton>
 
           <IconButton
             color="error"
-            onClick={() => handleDeleteClick(params.row.id)}
+            disabled={selectedRows.length > 1}
+            onClick={(event) => {
+              event.stopPropagation();
+              handleDeleteClick(params.row.id);
+            }}
           >
             <DeleteIcon />
           </IconButton>
@@ -66,6 +74,7 @@ function Products() {
 
   // DELETE DATA
   const [deleteId, setDeleteId] = useState(null);
+  const [selectedRows, setSelectedRows] = useState([]);
   
   // HANDLE DIALOG BOX STATE
   const [open, setOpen] = useState(false);
@@ -77,6 +86,7 @@ function Products() {
   // HANDLE DAILOG BOX
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
 
   // HANDLE DATA CHANGE
   const handleChange = (e) => {
@@ -141,19 +151,42 @@ function Products() {
 
   const handleDeleteConfirm = () => {
 
-    const filteredProducts = products.filter(
-      (product) => product.id !== deleteId
-    );
+    if(selectedRows.length === 0) {
 
-    setProducts(filteredProducts);
+      const filteredProducts = products.filter(
+        (product) => product.id !== deleteId
+      );
 
-    setDeleteOpen(false);
-    setDeleteId(null);
+      setProducts(filteredProducts);
+
+      setDeleteOpen(false);
+      setDeleteId(null);
+
+    } 
+    else {
+
+      const filteredProducts = products.filter(
+        (product) => !selectedRows.includes(product.id)
+      );
+
+      setProducts(filteredProducts);
+      
+      setSelectedRows([]);
+      setDeleteOpen(false);
+
+    }
+    
   };
 
   const handleDeleteCancel = () => {
     setDeleteOpen(false);
     setDeleteId(null);
+  };
+
+  const handleBulkDelete = () => {
+
+    setDeleteOpen(true);
+    
   };
 
 
@@ -172,9 +205,21 @@ function Products() {
           Products
         </Typography>
 
-        <Button variant="contained" onClick={handleOpen}>
-          Add Product
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2 }} >
+          <Button
+            variant="contained"
+            color="error"
+            sx={{ ml: 2 }}
+            disabled={selectedRows.length <= 1}
+            onClick={handleBulkDelete}
+          >
+            Delete Multiple
+          </Button>
+
+          <Button variant="contained" onClick={handleOpen}>
+            Add Product
+          </Button>
+        </Box>
       </Box>
 
       <Box sx={{ height: 400, width: "100%" }}>
@@ -183,6 +228,10 @@ function Products() {
           columns={columns}
           pageSizeOptions={[5, 10]}
           checkboxSelection
+          disableRowSelectionOnClick
+          onRowSelectionModelChange={(selectionModel) => {
+            setSelectedRows(Array.from(selectionModel.ids));
+          }}
         />
       </Box>
 
