@@ -1,18 +1,16 @@
-import {
-  Box,
-  Typography,
-  Button,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Paper
-} from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 
 function Products() {
 
-  const products = [
+  const columns = [
+    { field: "id", headerName: "ID", width: 90 },
+    { field: "name", headerName: "Product Name", flex: 1 },
+    { field: "brand", headerName: "Brand", flex: 1 },
+    { field: "stock", headerName: "Stock", width: 120 }
+  ];
+
+  const rows = [
     { id: 1, name: "Wall Tiles", brand: "Kajaria", stock: 120 },
     { id: 2, name: "Floor Tiles", brand: "Somany", stock: 80 },
     { id: 3, name: "Bathroom Tiles", brand: "Johnson", stock: 50 }
@@ -37,33 +35,14 @@ function Products() {
         </Button>
       </Box>
 
-      <Paper>
-
-        <Table>
-
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Product Name</TableCell>
-              <TableCell>Brand</TableCell>
-              <TableCell>Stock</TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {products.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell>{product.id}</TableCell>
-                <TableCell>{product.name}</TableCell>
-                <TableCell>{product.brand}</TableCell>
-                <TableCell>{product.stock}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-
-        </Table>
-
-      </Paper>
+      <Box sx={{ height: 400, width: "100%" }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSizeOptions={[5, 10]}
+          checkboxSelection
+        />
+      </Box>
 
     </Box>
   );
