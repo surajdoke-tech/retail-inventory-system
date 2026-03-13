@@ -1,5 +1,8 @@
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, IconButton } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function Products() {
 
@@ -7,7 +10,25 @@ function Products() {
     { field: "id", headerName: "ID", width: 90 },
     { field: "name", headerName: "Product Name", flex: 1 },
     { field: "brand", headerName: "Brand", flex: 1 },
-    { field: "stock", headerName: "Stock", width: 120 }
+    { field: "stock", headerName: "Stock", width: 120 },
+
+    {
+      field: "actions",
+      headerName: "Actions",
+      width: 150,
+      sortable: false,
+      renderCell: () => (
+        <>
+          <IconButton color="primary">
+            <EditIcon />
+          </IconButton>
+
+          <IconButton color="error">
+            <DeleteIcon />
+          </IconButton>
+        </>
+      )
+    }
   ];
 
   const rows = [
